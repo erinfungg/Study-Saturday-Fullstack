@@ -18,34 +18,11 @@ class Main extends Component {
 
     this.selectStudent = this.selectStudent.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.addStudent = this.addStudent.bind(this);
+    //this.addStudent = this.addStudent.bind(this);
   }
 
   componentDidMount() {
     this.props.getStudents();
-  }
-
-  // async getStudents() {
-  //   console.log("fetching");
-  //   try {
-  //     const { data } = await axios.get("/student");
-  //     this.setState({ students: data });
-  //     console.log("THis is the State", this.state);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }
-
-  async addStudent(newStudent) {
-    try {
-      const { data } = await axios.post("/student", newStudent);
-      this.setState({
-        students: [...this.state.students, data],
-        showStudent: false
-      });
-    } catch (error) {
-      console.log("error posting new student: ", error);
-    }
   }
 
   selectStudent(student) {
@@ -67,7 +44,7 @@ class Main extends Component {
         <h1>Students</h1>
         <button onClick={this.handleClick}>Add Student</button>
         {this.state.showStudent ? (
-          <NewStudentForm addStudent={this.addStudent} />
+          <NewStudentForm showStudent={this.handleClick} />
         ) : null}
         <table>
           <thead>

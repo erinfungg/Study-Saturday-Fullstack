@@ -6,11 +6,17 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 //ACTION TYPES
 const GOT_STUDENTS = "GOT_STUDENTS";
+const ADDED_STUDENT = "ADDED_STUDENT";
 
 //ACTION CREATORS
 const gotStudents = students => ({
   type: GOT_STUDENTS,
   students
+});
+
+const addedStudent = student => ({
+  type: ADDED_STUDENT,
+  student
 });
 
 //THUNKS
@@ -23,6 +29,16 @@ export const getStudents = () => async dispatch => {
   }
 };
 
+export const addStudent = newStudent => async dispatch => {
+  try {
+    const { data } = await axios.post("/student", newStudent);
+    console.log(data);
+    dispatch(addedStudent(data));
+  } catch (error) {
+    console.log("error posting new student: ", error);
+  }
+};
+
 const initialState = {
   students: []
 };
@@ -32,6 +48,8 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GOT_STUDENTS:
       return { students: action.students };
+    case ADDED_STUDENT:
+      return { students: [...state.students, action.student] };
     default:
       return state;
   }

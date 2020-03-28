@@ -12323,7 +12323,7 @@ function useReduxContext() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getStudents = undefined;
+exports.addStudent = exports.getStudents = undefined;
 
 var _redux = __webpack_require__(359);
 
@@ -12343,16 +12343,26 @@ var _reduxDevtoolsExtension = __webpack_require__(419);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 //ACTION TYPES
 var GOT_STUDENTS = "GOT_STUDENTS";
+var ADDED_STUDENT = "ADDED_STUDENT";
 
 //ACTION CREATORS
 var gotStudents = function gotStudents(students) {
   return {
     type: GOT_STUDENTS,
     students: students
+  };
+};
+
+var addedStudent = function addedStudent(student) {
+  return {
+    type: ADDED_STUDENT,
+    student: student
   };
 };
 
@@ -12398,6 +12408,48 @@ var getStudents = exports.getStudents = function getStudents() {
   }();
 };
 
+var addStudent = exports.addStudent = function addStudent(newStudent) {
+  return function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dispatch) {
+      var _ref4, data;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              _context2.next = 3;
+              return _axios2.default.post("/student", newStudent);
+
+            case 3:
+              _ref4 = _context2.sent;
+              data = _ref4.data;
+
+              console.log(data);
+              dispatch(addedStudent(data));
+              _context2.next = 12;
+              break;
+
+            case 9:
+              _context2.prev = 9;
+              _context2.t0 = _context2["catch"](0);
+
+              console.log("error posting new student: ", _context2.t0);
+
+            case 12:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, undefined, [[0, 9]]);
+    }));
+
+    return function (_x2) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+};
+
 var initialState = {
   students: []
 };
@@ -12410,6 +12462,8 @@ var reducer = function reducer() {
   switch (action.type) {
     case GOT_STUDENTS:
       return { students: action.students };
+    case ADDED_STUDENT:
+      return { students: [].concat(_toConsumableArray(state.students), [action.student]) };
     default:
       return state;
   }
@@ -41015,10 +41069,6 @@ var _store = __webpack_require__(365);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -41040,7 +41090,7 @@ var Main = function (_Component) {
 
     _this.selectStudent = _this.selectStudent.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
-    _this.addStudent = _this.addStudent.bind(_this);
+    //this.addStudent = this.addStudent.bind(this);
     return _this;
   }
 
@@ -41049,63 +41099,6 @@ var Main = function (_Component) {
     value: function componentDidMount() {
       this.props.getStudents();
     }
-
-    // async getStudents() {
-    //   console.log("fetching");
-    //   try {
-    //     const { data } = await axios.get("/student");
-    //     this.setState({ students: data });
-    //     console.log("THis is the State", this.state);
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // }
-
-  }, {
-    key: "addStudent",
-    value: function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(newStudent) {
-        var _ref2, data;
-
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return _axios2.default.post("/student", newStudent);
-
-              case 3:
-                _ref2 = _context.sent;
-                data = _ref2.data;
-
-                this.setState({
-                  students: [].concat(_toConsumableArray(this.state.students), [data]),
-                  showStudent: false
-                });
-                _context.next = 11;
-                break;
-
-              case 8:
-                _context.prev = 8;
-                _context.t0 = _context["catch"](0);
-
-                console.log("error posting new student: ", _context.t0);
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this, [[0, 8]]);
-      }));
-
-      function addStudent(_x) {
-        return _ref.apply(this, arguments);
-      }
-
-      return addStudent;
-    }()
   }, {
     key: "selectStudent",
     value: function selectStudent(student) {
@@ -41137,7 +41130,7 @@ var Main = function (_Component) {
           { onClick: this.handleClick },
           "Add Student"
         ),
-        this.state.showStudent ? _react2.default.createElement(_NewStudentForm2.default, { addStudent: this.addStudent }) : null,
+        this.state.showStudent ? _react2.default.createElement(_NewStudentForm2.default, { showStudent: this.handleClick }) : null,
         _react2.default.createElement(
           "table",
           null,
@@ -43815,7 +43808,7 @@ createSelectorHook();
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _react = __webpack_require__(335);
@@ -43825,29 +43818,29 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var StudentList = function StudentList(props) {
-    console.log("p", props);
-    return _react2.default.createElement(
-        "tbody",
-        null,
-        props.students.map(function (student) {
-            return _react2.default.createElement(
-                "tr",
-                { key: student.id },
-                _react2.default.createElement(
-                    "td",
-                    null,
-                    student.fullName
-                ),
-                _react2.default.createElement(
-                    "td",
-                    { onClick: function onClick() {
-                            return props.selectStudent(student);
-                        } },
-                    "Details"
-                )
-            );
-        })
-    );
+  console.log("p", props);
+  return _react2.default.createElement(
+    "tbody",
+    null,
+    props.students.map(function (student) {
+      return _react2.default.createElement(
+        "tr",
+        { key: student.id },
+        _react2.default.createElement(
+          "td",
+          null,
+          student.fullName
+        ),
+        _react2.default.createElement(
+          "td",
+          { onClick: function onClick() {
+              return props.selectStudent(student);
+            } },
+          "Details"
+        )
+      );
+    })
+  );
 };
 
 exports.default = StudentList;
@@ -43860,7 +43853,7 @@ exports.default = StudentList;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _react = __webpack_require__(335);
@@ -43870,78 +43863,78 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var avgGrade = function avgGrade(tests) {
-    return Math.round(tests.map(function (test) {
-        return test.grade;
-    }).reduce(function (x, y) {
-        return x + y;
-    }) / tests.length);
+  return Math.round(tests.map(function (test) {
+    return test.grade;
+  }).reduce(function (x, y) {
+    return x + y;
+  }) / tests.length);
 };
 
 var SingleStudent = function SingleStudent(props) {
-    console.log('ppp', props);
-    return _react2.default.createElement(
-        'div',
+  console.log("ppp", props);
+  return _react2.default.createElement(
+    "div",
+    null,
+    _react2.default.createElement(
+      "h3",
+      null,
+      props.student.fullName
+    ),
+    _react2.default.createElement(
+      "h3",
+      null,
+      "Average grade: ",
+      avgGrade(props.student.tests),
+      "%"
+    ),
+    _react2.default.createElement(
+      "div",
+      null,
+      _react2.default.createElement(
+        "table",
         null,
         _react2.default.createElement(
-            'h3',
-            null,
-            props.student.fullName
-        ),
-        _react2.default.createElement(
-            'h3',
-            null,
-            'Average grade: ',
-            avgGrade(props.student.tests),
-            '%'
-        ),
-        _react2.default.createElement(
-            'div',
+          "thead",
+          null,
+          _react2.default.createElement(
+            "tr",
             null,
             _react2.default.createElement(
-                'table',
-                null,
-                _react2.default.createElement(
-                    'thead',
-                    null,
-                    _react2.default.createElement(
-                        'tr',
-                        null,
-                        _react2.default.createElement(
-                            'th',
-                            null,
-                            'Subject'
-                        ),
-                        _react2.default.createElement(
-                            'th',
-                            null,
-                            'Grade'
-                        )
-                    )
-                ),
-                _react2.default.createElement(
-                    'tbody',
-                    null,
-                    props.student.tests.map(function (test) {
-                        return _react2.default.createElement(
-                            'tr',
-                            { key: test.id },
-                            _react2.default.createElement(
-                                'td',
-                                null,
-                                test.subject
-                            ),
-                            _react2.default.createElement(
-                                'td',
-                                null,
-                                test.grade,
-                                '%'
-                            )
-                        );
-                    })
-                )
+              "th",
+              null,
+              "Subject"
+            ),
+            _react2.default.createElement(
+              "th",
+              null,
+              "Grade"
             )
+          )
+        ),
+        _react2.default.createElement(
+          "tbody",
+          null,
+          props.student.tests.map(function (test) {
+            return _react2.default.createElement(
+              "tr",
+              { key: test.id },
+              _react2.default.createElement(
+                "td",
+                null,
+                test.subject
+              ),
+              _react2.default.createElement(
+                "td",
+                null,
+                test.grade,
+                "%"
+              )
+            );
+          })
         )
-    );
+      )
+    )
+  );
 };
 
 exports.default = SingleStudent;
@@ -43962,6 +43955,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = __webpack_require__(335);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(354);
+
+var _store = __webpack_require__(365);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44006,6 +44003,7 @@ var NewStudentForm = function (_Component) {
         lastName: "",
         email: ""
       });
+      this.props.showStudent();
     }
   }, {
     key: "render",
@@ -44058,7 +44056,15 @@ var NewStudentForm = function (_Component) {
   return NewStudentForm;
 }(_react.Component);
 
-exports.default = NewStudentForm;
+var mapDispatch = function mapDispatch(dispatch) {
+  return {
+    addStudent: function addStudent(newStudent) {
+      return dispatch((0, _store.addStudent)(newStudent));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(null, mapDispatch)(NewStudentForm);
 
 /***/ }),
 /* 417 */
